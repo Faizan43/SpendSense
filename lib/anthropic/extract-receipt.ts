@@ -100,9 +100,12 @@ export async function extractReceipt(
   const response = await getClient().messages.create({
     model,
     max_tokens: 8000,
-    // Thinking stays on (the default). Turning it off is what triggers the
-    // known "writes the answer as prose instead of the structured shape"
-    // behaviour, and medium effort already keeps the cost sensible.
+    // Thinking must stay on. Unlike Opus 5, Sonnet 4.6 does not default to
+    // adaptive thinking when the param is omitted, so it's set explicitly
+    // here. Leaving it off is what triggers the known "writes the answer as
+    // prose instead of the structured shape" behaviour, and medium effort
+    // already keeps the cost sensible.
+    thinking: { type: "adaptive" },
     output_config: {
       effort: "medium",
       format: { type: "json_schema", schema: RECEIPT_JSON_SCHEMA },

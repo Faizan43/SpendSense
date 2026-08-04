@@ -30,7 +30,7 @@ export const env = {
     return required("ANTHROPIC_API_KEY", process.env.ANTHROPIC_API_KEY);
   },
   get anthropicModel() {
-    return process.env.ANTHROPIC_MODEL?.trim() || "claude-opus-5";
+    return process.env.ANTHROPIC_MODEL?.trim() || "claude-sonnet-4-6";
   },
   get siteUrl() {
     return (

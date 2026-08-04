@@ -12,7 +12,7 @@ warns you at 80% rather than after you've blown it.
 |---|---|
 | App | Next.js 16 (App Router), TypeScript, Tailwind v4, shadcn/ui |
 | Data + auth + files | Supabase (Postgres, Auth, Storage) |
-| Receipt reading | Claude vision (`claude-opus-5`) with structured JSON output |
+| Receipt reading | Claude vision (`claude-sonnet-4-6`) with structured JSON output |
 | Charts | Recharts |
 | Tests | Vitest |
 
@@ -91,17 +91,18 @@ Remove it any time with `delete from transactions where notes = 'demo-data';`.
    receipt photo would exceed the server action body limit.
 2. `POST /api/receipts/[id]/process` normalises the image with `sharp`
    (auto-rotate from EXIF, strip metadata, cap the long edge at 2576px — Claude's
-   high-resolution ceiling) and sends it to `claude-opus-5` with a JSON schema,
-   so the response is guaranteed to parse. PDFs go across as a native document
-   block; there's no separate OCR step.
+   high-resolution ceiling) and sends it to `claude-sonnet-4-6` with a JSON
+   schema, so the response is guaranteed to parse. PDFs go across as a native
+   document block; there's no separate OCR step.
 3. The extraction is stored on the receipt row and turned into a **draft**. The
    review screen shows the image beside an editable grid, flags low-confidence
    lines in amber, and reconciles the item total against the printed total.
 4. Nothing counts towards your spending until you press save.
 
-Cost is roughly a few cents per receipt on `claude-opus-5`. Set
-`ANTHROPIC_MODEL=claude-sonnet-5` to halve it — the schema and prompt are
-identical.
+Cost is roughly a cent or two per receipt on `claude-sonnet-4-6`. Set
+`ANTHROPIC_MODEL=claude-opus-5` if you want the most accurate reading on
+creased, faded or thermal-printed receipts instead — the schema and prompt
+are identical.
 
 ## How categorisation works
 
