@@ -1,26 +1,215 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* These must point at the next/font variables set on <html> in layout.tsx.
+     Pointing --font-sans at itself resolves to nothing and silently drops the
+     whole UI back to the browser's default serif. Fallback chain matches the
+     Organic design system's own styles.css. */
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-caprasimo), system-ui, sans-serif;
+  --shadow-sm: var(--shadow-sm-value);
+  --shadow-md: var(--shadow-md-value);
+  --shadow-lg: var(--shadow-lg-value);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
+  --color-chart-other: var(--chart-other);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Organic design system — verbatim from the Claude Design project's
+     styles.css (project d53fb978, "Financial dashboard design system").
+     Ramps are generated in OKLCH on one shared lightness scale, so the same
+     step of any role matches the others in visual value. */
+  --color-bg: #f5ead8;
+  --color-surface: #ebddc5;
+  --color-text: #201e1d;
+  --color-accent-100: #fff2eb;
+  --color-accent-200: #ffe1d0;
+  --color-accent-400: #f6a06b;
+  --color-accent-600: #b2622d;
+  --color-accent-700: #8c491a;
+  --color-accent-800: #643312;
+  --color-accent-900: #402310;
+  --color-accent-2-400: #aebf92;
+  --color-accent-2-800: #3d472b;
+  --color-neutral-100: #f9f4ed;
+  --color-neutral-200: #eee7db;
+  --color-neutral-800: #474238;
+  --color-neutral-900: #2e2b25;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text);
+  --primary: var(--color-accent-600);
+  --primary-foreground: var(--color-bg);
+  --secondary: var(--color-neutral-200);
+  --secondary-foreground: var(--color-text);
+  --muted: var(--color-neutral-200);
+  --muted-foreground: color-mix(in srgb, var(--color-text) 55%, transparent);
+  --accent: var(--color-accent-100);
+  --accent-foreground: var(--color-accent-800);
+  --destructive: oklch(0.577 0.245 27.325);
+  --success: oklch(0.6 0.13 155);
+  --warning: oklch(0.72 0.15 75);
+  --border: color-mix(in srgb, var(--color-text) 16%, transparent);
+  --input: color-mix(in srgb, var(--color-text) 16%, transparent);
+  --ring: var(--color-accent-600);
+  /* Categorical series palette — validated for CVD separation and contrast
+     against the light card surface. Order is the safety mechanism: do not
+     reorder or extend without re-running the palette validator. Unrelated to
+     the Organic re-skin — left untouched. */
+  --chart-1: #2a78d6;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
+  --chart-6: #008300;
+  --chart-7: #4a3aa7;
+  --chart-8: #e34948;
+  --chart-other: #898781;
+  --chart-grid: #e1e0d9;
+  --chart-axis: #c3c2b7;
+  /* Tuned so --radius-xl (the multiplier this codebase's Card/Dialog already
+     use) lands on the design's card/dialog target of calc(28px * 1.15) =
+     32.2px. Pill controls (Button) don't derive from this chain — they're
+     hardcoded to rounded-full directly, matching the design's separate
+     "controls always go 999px" rule. */
+  --radius: 1.4375rem;
+  --shadow-sm-value: 0 1px 2px color-mix(in srgb, var(--color-neutral-900) 14%, transparent);
+  --shadow-md-value: 0 3px 10px color-mix(in srgb, var(--color-neutral-900) 16%, transparent);
+  --shadow-lg-value: 0 12px 32px color-mix(in srgb, var(--color-neutral-900) 22%, transparent);
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-text);
+  --sidebar-primary: var(--color-accent-600);
+  --sidebar-primary-foreground: var(--color-bg);
+  --sidebar-accent: var(--color-accent-100);
+  --sidebar-accent-foreground: var(--color-accent-800);
+  --sidebar-border: color-mix(in srgb, var(--color-text) 16%, transparent);
+  --sidebar-ring: var(--color-accent-600);
+}
+
+.dark {
+  /* Not part of the Claude Design project — the Organic system only defines
+     a light palette. This is my own extrapolation: same accent/neutral
+     ramps as :root (a ramp is a ramp regardless of mode), re-stepped for a
+     dark surface using the same method the previous dark theme used —
+     lighten what needs contrast, invert which end of each pairing is the
+     tint vs. the text. Swap this block out wholesale if a real dark variant
+     ever gets designed. */
+  --color-bg: var(--color-neutral-900);
+  --color-surface: var(--color-neutral-800);
+  --color-text: var(--color-neutral-100);
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text);
+  /* Accent-400 is the design's own "on-dark" step (it's what the brand-mark
+     gradient uses) — lighter and more luminous than accent-600, which reads
+     too muddy against a dark surface. */
+  --primary: var(--color-accent-400);
+  --primary-foreground: var(--color-accent-900);
+  --secondary: var(--color-neutral-800);
+  --secondary-foreground: var(--color-text);
+  --muted: var(--color-neutral-800);
+  --muted-foreground: color-mix(in srgb, var(--color-neutral-100) 55%, transparent);
+  /* Light mode's accent-100-bg/accent-800-text pairing inverts for dark: a
+     dark-tinted bg with light accent-colored text. */
+  --accent: var(--color-accent-800);
+  --accent-foreground: var(--color-accent-200);
+  --destructive: oklch(0.704 0.191 22.216);
+  --success: oklch(0.72 0.13 155);
+  --warning: oklch(0.79 0.14 75);
+  --border: color-mix(in srgb, var(--color-neutral-100) 16%, transparent);
+  --input: color-mix(in srgb, var(--color-neutral-100) 16%, transparent);
+  --ring: var(--color-accent-400);
+  /* Same eight hues, re-stepped for the dark card surface — not a flip.
+     Unrelated to the Organic re-skin — left untouched. */
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+  --chart-6: #008300;
+  --chart-7: #9085e9;
+  --chart-8: #e66767;
+  --chart-other: #898781;
+  --chart-grid: #2c2c2a;
+  --chart-axis: #383835;
+  --shadow-sm-value: 0 1px 2px color-mix(in srgb, black 30%, transparent);
+  --shadow-md-value: 0 3px 10px color-mix(in srgb, black 34%, transparent);
+  --shadow-lg-value: 0 12px 32px color-mix(in srgb, black 42%, transparent);
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-text);
+  --sidebar-primary: var(--color-accent-400);
+  --sidebar-primary-foreground: var(--color-accent-900);
+  --sidebar-accent: var(--color-accent-800);
+  --sidebar-accent-foreground: var(--color-accent-200);
+  --sidebar-border: color-mix(in srgb, var(--color-neutral-100) 16%, transparent);
+  --sidebar-ring: var(--color-accent-400);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }
